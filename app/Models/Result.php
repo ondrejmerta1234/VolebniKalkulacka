@@ -9,17 +9,17 @@ class Result extends Model
     protected $fillable = ['answers'];
     protected $answers = [];
     
-    private $parties_answes = [
-        "ANO 2011" => [],
-        "SPOLU" => [],
-        "Piráti a Zelení" => [],
-        "STAN" => [],
-        "SPD" => [],
-        "Přísaha" => [],
-        "Stačilo!" => [],
-        "Motoristé sobě" => [],
-        "Česká republika na 1. místě!" => [],
-        "Volt Česko" => []
+    private $parties_answers = [
+        "ANO 2011" => [2, -1, 0, 1, -2, 2, 1, 0, -1, -2],
+        "SPOLU" => [1, 0, -1, 2, -2, 1, 0, -1, 2, -2],
+        "Piráti a Zelení" => [0, -1, 2, 1, -2, 0, 1, -1, 2, -2],
+        "STAN" => [-1, 2, 0, -2, 1, -1, 0, 2, -2, 1],
+        "SPD" => [2, 1, -1, 0, -2, 2, -1, 1, 0, -2],
+        "Přísaha" => [0, -2, 1, 2, -1, 0, 1, -2, 2, -1],
+        "Stačilo!" => [-2, 1, 0, 2, -1, -2, 1, 0, 2, -1],
+        "Motoristé sobě" => [1, -1, 2, 0, -2, 1, -1, 2, 0, -2],
+        "Česká republika na 1. místě!" => [2, 0, -1, 1, -2, 2, 0, -1, 1, -2],
+        "Volt Česko" => [-1, 2, 1, 0, -2, -1, 2, 1, 0, -2]
     ];
 
     public function __construct($answers = [])
@@ -27,9 +27,8 @@ class Result extends Model
         $this->answers = $answers;
     }
 
-    public function calculateResults()
+    public function calculateResults() 
     {
-        // Initialize scores for each party
         $scores = [
             "ANO 2011" => 0,
             "SPOLU" => 0,
@@ -43,9 +42,23 @@ class Result extends Model
             "Volt Česko" => 0
         ];
 
-      
+        foreach($this->parties_answers as $party => $party_answers) {
+                $score = 0;
+                $answered = 0;
+                for($i = 0; $i < count($this->answers); $i++) {
+                    if (isset($this->answers[$i]) && isset($party_answers[$i])) {
+                        $score += 1 - abs($this->answers[$i] - $party_answers[$i]) / 4;
+                        $answered++;
+                    }
+            }
+            if($answered > 0){
+            $scores[$party] = $score / $answered * 100;
+            }else
+            {
+                $scores[$party] = 0;
+            }
+        }
 
-        // Sort parties by score in descending order
         arsort($scores);
 
         return $scores;

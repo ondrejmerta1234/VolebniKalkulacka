@@ -1,6 +1,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref } from 'vue';
+import { router } from '@inertiajs/vue3';
 
 const questions = [
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'
@@ -11,17 +12,19 @@ const currentIndex = ref(0); //ref for tracking the current question index (auto
 const currentAnswer = ref(0);
 const test = ref('test');
 function nextQuestion(){
-   test.value = 'next';
+    answers.value[currentIndex.value] = currentAnswer.value;
+    currentIndex.value++;
+    currentAnswer.value = answers.value[currentIndex.value] ?? 0; //nastavi na 0 pokud neni odpoved
 }
-function previousQuestion(){
-
-
+function prevQuestion(){
+    answers.value[currentIndex.value] = currentAnswer.value;
+    currentIndex.value--;
+    currentAnswer.value = answers.value[currentIndex.value] ?? 0; //nastavi na
 }
 function submitForm(){
-    
-
-
-    Inertia.post('/form', { questions: answers.value })
+    answers.value[currentIndex.value] = currentAnswer.value;
+    console.log(answers.value);
+    router.post('/form', { questions: answers.value })
 }
 </script>
 
@@ -38,27 +41,28 @@ function submitForm(){
       <p class="mb-2 font-semibold">Otázka {{ currentIndex + 1 }} / {{ questions.length }}</p>
       <div class="mb-4">
         {{ questions[currentIndex] }}
+        {{ currentAnswer }}
       </div>
 
       <div class="flex gap-4">
     <label>
-      <input type="radio" v-model="currentAnswer.value" :value="2" />
+      <input type="radio" v-model="currentAnswer" :value="2" />
       Silně souhlasím 
     </label>
     <label>
-      <input type="radio" v-model="currentAnswer.value" :value="1" />
+      <input type="radio" v-model="currentAnswer" :value="1" />
       Souhlasím 
     </label>
     <label>
-      <input type="radio" v-model="currentAnswer.value" :value="0" />
+      <input type="radio" v-model="currentAnswer" :value="0" />
       Neutrální 
     </label>
     <label>
-      <input type="radio" v-model="currentAnswer.value" :value="-1" />
+      <input type="radio" v-model="currentAnswer" :value="-1" />
       Nesouhlasím 
     </label>
     <label>
-      <input type="radio" v-model="currentAnswer.value" :value="-2" />
+      <input type="radio" v-model="currentAnswer" :value="-2" />
       Silně nesouhlasím
     </label>
   </div>

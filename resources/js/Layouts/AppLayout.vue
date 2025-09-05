@@ -1,5 +1,11 @@
+<script setup>
+import { Head } from '@inertiajs/vue3';
+</script>
 <template>
     <div class="min-h-screen bg-gray-100">
+      <Head>
+        <title>Volebni kalkulacka</title>
+      </Head>
       <header class="bg-blue-600 text-white p-4">
         <h1>Volebni kalkulacka</h1>
       </header>

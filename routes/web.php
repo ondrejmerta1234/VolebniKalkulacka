@@ -17,7 +17,8 @@ Route::get('/form', function () {
 Route::post('/form', [FormController::class, 'submit']);
 
 Route::get('/result', function () {
-    return Inertia::render('Result');
+    $array = session('results',[]);
+    return Inertia::render('Result', ['results' => $array]);
 });
 
 
